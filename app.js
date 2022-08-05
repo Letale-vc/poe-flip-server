@@ -14,7 +14,6 @@ const app = express()
 // настройка корс
 const whitelist = [
   'http://localhost:3000',
-  'http://127.0.0.1:3000',
   'http://31.131.100.39:3000',
   'https://poe-flip.helpless.keenetic.link',
   'http://poe-flip.helpless.keenetic.link',
