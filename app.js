@@ -60,8 +60,12 @@ app.post('/ninja', async (req, res) => {
 })
 app.post('/update', async (req, res) => {
   try {
-    poeAPI()
-    res.status(203).send('updated')
+    if (req.body.poesessid) {
+      poeAPI(req.body.poesessid)
+      res.status(203).send('updated')
+      return
+    }
+    res.status(400).send({ message: 'notHavePoesessid' })
   } catch (err) {
     console.log(err)
     res.status(500).send(err)
@@ -90,9 +94,9 @@ app.get('/poeTrade', async (req, res) => {
     if (fs.existsSync('poeData.json')) {
       const poeTradeDataNameFile = 'poeData.json'
       const dateLastUpdate = fs.statSync(poeTradeDataNameFile).mtime
-      const pathpoeTradeDataFile = path.resolve(poeTradeDataNameFile)
+      const pathPoeTradeDataFile = path.resolve(poeTradeDataNameFile)
       const contents = await fs.promises.readFile(
-        path.join(pathpoeTradeDataFile)
+        path.join(pathPoeTradeDataFile)
       )
       const canUpdate = Date.now() - dateLastUpdate.getTime() > 60000
       const canNextUpdate = new Date(
