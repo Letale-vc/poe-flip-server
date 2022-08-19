@@ -60,12 +60,8 @@ app.post('/ninja', async (req, res) => {
 })
 app.post('/update', async (req, res) => {
   try {
-    if (req.body.poesessid) {
-      poeAPI(req.body.poesessid)
-      res.status(203).send('updated')
-      return
-    }
-    res.status(400).send({ message: 'notHavePoesessid' })
+    poeAPI()
+    res.status(203).send('updated')
   } catch (err) {
     console.log(err)
     res.status(500).send(err)

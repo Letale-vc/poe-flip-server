@@ -177,9 +177,9 @@ const takeExaltedValue = async (
   return round10(resultValues.accValue / resultValues.count, -1)
 }
 
-const makeARequestToAnyItem = async (urls, query, poesessid) => {
+const makeARequestToAnyItem = async (urls, query) => {
   try {
-    const firstRequest = await poeFirsRequest(urls.firstUrl, query, poesessid)
+    const firstRequest = await poeFirsRequest(urls.firstUrl, query)
     const { id, result } = firstRequest
     const totalTakeResultArray = []
     const howMuchToTakeFromTheResult = result.length <= 10 ? result.length : 10
@@ -191,8 +191,7 @@ const makeARequestToAnyItem = async (urls, query, poesessid) => {
     const secondRequest = await poeSecondRequest(
       urls.secondUrl,
       resultIdsArrayString,
-      id,
-      poesessid
+      id
     )
     return { result: secondRequest.result, id }
   } catch (err) {
@@ -208,11 +207,10 @@ const takeCardInfo = async ({
   urls,
   cardQuery,
   exaltedChaosEquivalent,
-  divineChaosEquivalent,
-  poesessid
+  divineChaosEquivalent
 }) => {
   try {
-    const infoCard = await makeARequestToAnyItem(urls, cardQuery, poesessid)
+    const infoCard = await makeARequestToAnyItem(urls, cardQuery)
 
     const { result } = infoCard
     const card = result[0].item.baseType
@@ -249,8 +247,7 @@ const takeItemInfo = async ({
   exaltedChaosEquivalent,
   divineChaosEquivalent,
   card,
-  leagueName,
-  poesessid
+  leagueName
 }) => {
   try {
     if (itemQuery === '10xExalted Orb' || itemQuery === '7xExalted Orb') {
@@ -272,7 +269,7 @@ const takeItemInfo = async ({
         itemLink: getAnyItemLink(leagueName, deliriumOrbQuery)
       }
     }
-    const infoItem = await makeARequestToAnyItem(urls, itemQuery, poesessid)
+    const infoItem = await makeARequestToAnyItem(urls, itemQuery)
     const { result } = infoItem
     const checkItemBaseName =
       result[0].item.name !== '' &&
@@ -306,7 +303,7 @@ const takeItemInfo = async ({
   }
 }
 
-const takeRow = async ({ cardQuery, itemQuery, leagueName, poesessid }) => {
+const takeRow = async ({ cardQuery, itemQuery, leagueName }) => {
   try {
     const searchStartUrls = await poeSearchStartedUrl(leagueName)
     const exaltedChaosEquivalent = await takeAnyCurrencyInfoFromPoeninja(
@@ -321,8 +318,7 @@ const takeRow = async ({ cardQuery, itemQuery, leagueName, poesessid }) => {
       urls: searchStartUrls,
       cardQuery,
       exaltedChaosEquivalent,
-      divineChaosEquivalent,
-      poesessid
+      divineChaosEquivalent
     })
     const itemInfo = await takeItemInfo({
       urls: searchStartUrls,
@@ -330,8 +326,7 @@ const takeRow = async ({ cardQuery, itemQuery, leagueName, poesessid }) => {
       exaltedChaosEquivalent,
       divineChaosEquivalent,
       card: cardInfo.card,
-      leagueName,
-      poesessid
+      leagueName
     })
     const profitInExalted = round10(
       itemInfo.itemExaltedValue -
@@ -361,7 +356,7 @@ const takeRow = async ({ cardQuery, itemQuery, leagueName, poesessid }) => {
   }
 }
 
-const createOrUpdateData = async (isHaveFile, poesessid) => {
+const createOrUpdateData = async (isHaveFile) => {
   try {
     const leagueName = await getLeagueName()
     const searchQueries = await loadAnyFile(namesFile.poeQueries)
@@ -373,8 +368,7 @@ const createOrUpdateData = async (isHaveFile, poesessid) => {
           const row = await takeRow({
             cardQuery: current.cardQuery,
             itemQuery: current.itemQuery,
-            leagueName,
-            poesessid
+            leagueName
           })
 
           if (!!row.card && !!row.item) {
@@ -435,13 +429,13 @@ const createOrUpdateData = async (isHaveFile, poesessid) => {
   }
 }
 
-exports.poeAPI = async (poesessid) => {
+exports.poeAPI = async () => {
   try {
     this.forceStopChange(true)
     while (forceStop) {
       const isHaveFile = fs.existsSync('poeData.json')
       try {
-        await createOrUpdateData(isHaveFile, poesessid)
+        await createOrUpdateData(isHaveFile)
         console.log('passed the cycle')
       } catch (err) {
         console.error(err)

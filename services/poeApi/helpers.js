@@ -44,13 +44,12 @@ exports.poeSearchStartedUrl = async (leagueName) => {
   }
 }
 
-exports.poeFirsRequest = async (firstUrl, bodyJson, poesessid) => {
+exports.poeFirsRequest = async (firstUrl, bodyJson) => {
   try {
     const response = await fetch(firstUrl, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json',
-        cookie: `POESESSID=${poesessid}`
+        'Content-Type': 'application/json'
       },
       body: bodyJson
     })
@@ -60,15 +59,14 @@ exports.poeFirsRequest = async (firstUrl, bodyJson, poesessid) => {
   }
 }
 
-exports.poeSecondRequest = async (secondUrl, resultIdsArray, id, poesessid) => {
+exports.poeSecondRequest = async (secondUrl, resultIdsArray, id) => {
   try {
     const response = await fetch(
       `https://www.pathofexile.com/api/trade/fetch/${resultIdsArray}?query=${id}`,
       {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          cookie: `POESESSID=${poesessid}`
+          'Content-Type': 'application/json'
         }
       }
     )
