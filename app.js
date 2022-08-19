@@ -44,9 +44,9 @@ app.post('/ninja', async (req, res) => {
   try {
     const poeninjaReq = await poeninja()
     const dateLastUpdate = fs.statSync('ninjaData.json').mtime
-    const canUpdate = Date.now() - dateLastUpdate.getTime() > 3600000
+    const canUpdate = Date.now() - dateLastUpdate.getTime() > 60000
     const canNextUpdate = new Date(
-      Date.now() + 3600000 - (Date.now() - dateLastUpdate.getTime())
+      Date.now() + 60000 - (Date.now() - dateLastUpdate.getTime())
     )
     res.status(200).send({
       rows: poeninjaReq,
