@@ -27,7 +27,7 @@ exports.forceStopChange = (value) => {
   console.log('forseStop')
   forceStop = value
 }
-const takeExaltedInfoFromPoeninja = async (leagueName) => {
+const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
   try {
     const ninjaAPI = new NinjaAPI({
       league: leagueName
@@ -42,23 +42,29 @@ const takeExaltedInfoFromPoeninja = async (leagueName) => {
       await ninjaAPI.update()
       await ninjaAPI.save()
     }
-    const exaltedInfo = await ninjaAPI.getItem('Exalted Orb', {
+    const currencyInfo = await ninjaAPI.getItem(currency, {
       league: leagueName
     })
 
-    return exaltedInfo[0].chaosEquivalent
+    return currencyInfo[0].chaosEquivalent
   } catch (err) {
     console.error(err)
     return new Error(err)
   }
 }
 
-const takeChaosValue = async (itemsArray, exaltedChaosEquivalent, card) => {
+const takeChaosValue = async (
+  itemsArray,
+  exaltedChaosEquivalent,
+  divineChaosEquivalent,
+  card
+) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue) => {
       const isChaosCurrency = currentValue.listing.price.currency === 'chaos'
       const isExaltedCurrency =
         currentValue.listing.price.currency === 'exalted'
+      const isDivineCurrency = currentValue.listing.price.currency === 'divine'
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
@@ -83,6 +89,17 @@ const takeChaosValue = async (itemsArray, exaltedChaosEquivalent, card) => {
           count: previousValue.count + 1
         }
       }
+      if (isDivineCurrency) {
+        const convertDivineInChaos = b * divineChaosEquivalent
+        if (l !== 0 && (l * 100) / convertDivineInChaos < 85) {
+          return previousValue
+        }
+        return {
+          accValue: a + convertDivineInChaos,
+          lastPrice: b,
+          count: previousValue.count + 1
+        }
+      }
 
       return previousValue
     },
@@ -97,15 +114,34 @@ const takeChaosValue = async (itemsArray, exaltedChaosEquivalent, card) => {
   }
   return Math.round(resultValue.accValue / resultValue.count)
 }
-const takeExaltedValue = async (itemsArray, exaltedChaosEquivalent, card) => {
+const takeExaltedValue = async (
+  itemsArray,
+  exaltedChaosEquivalent,
+  divineChaosEquivalent,
+  card
+) => {
   const resultValues = itemsArray.reduce(
     (previousValue, currentValue) => {
       const isChaosCurrency = currentValue.listing.price.currency === 'chaos'
       const isExaltedCurrency =
         currentValue.listing.price.currency === 'exalted'
+      const isDivineCurrency = currentValue.listing.price.currency === 'divine'
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
+
+      if (isDivineCurrency) {
+        const convertDivineInChaos =
+          (b * divineChaosEquivalent) / exaltedChaosEquivalent
+        if (l !== 0 && (l * 100) / convertDivineInChaos < 85) {
+          return previousValue
+        }
+        return {
+          accValue: a + convertDivineInChaos,
+          lastPrice: b,
+          count: previousValue.count + 1
+        }
+      }
       if (isChaosCurrency) {
         const convertChaosInEx = b / exaltedChaosEquivalent
         if (l !== 0 && (l * 100) / convertChaosInEx < 85) {
@@ -172,6 +208,7 @@ const takeCardInfo = async ({
   urls,
   cardQuery,
   exaltedChaosEquivalent,
+  divineChaosEquivalent,
   poesessid
 }) => {
   try {
@@ -181,9 +218,19 @@ const takeCardInfo = async ({
     const card = result[0].item.baseType
     const stackSize = result[0].item.maxStackSize
     const cardChaosValue =
-      (await takeChaosValue(result, exaltedChaosEquivalent, card)) || null
+      (await takeChaosValue(
+        result,
+        exaltedChaosEquivalent,
+        divineChaosEquivalent,
+        card
+      )) || null
     const cardExaltedValue =
-      (await takeExaltedValue(result, exaltedChaosEquivalent, card)) || null
+      (await takeExaltedValue(
+        result,
+        exaltedChaosEquivalent,
+        divineChaosEquivalent,
+        card
+      )) || null
 
     return {
       card,
@@ -200,6 +247,7 @@ const takeItemInfo = async ({
   urls,
   itemQuery,
   exaltedChaosEquivalent,
+  divineChaosEquivalent,
   card,
   leagueName,
   poesessid
@@ -238,11 +286,13 @@ const takeItemInfo = async ({
     const itemChaosValue = await takeChaosValue(
       result,
       exaltedChaosEquivalent,
+      divineChaosEquivalent,
       card
     )
     const itemExaltedValue = await takeExaltedValue(
       result,
       exaltedChaosEquivalent,
+      divineChaosEquivalent,
       card
     )
     return {
@@ -259,17 +309,26 @@ const takeItemInfo = async ({
 const takeRow = async ({ cardQuery, itemQuery, leagueName, poesessid }) => {
   try {
     const searchStartUrls = await poeSearchStartedUrl(leagueName)
-    const exaltedChaosEquivalent = await takeExaltedInfoFromPoeninja(leagueName)
+    const exaltedChaosEquivalent = await takeAnyCurrencyInfoFromPoeninja(
+      leagueName,
+      'Exalted Orb'
+    )
+    const divineChaosEquivalent = await takeAnyCurrencyInfoFromPoeninja(
+      leagueName,
+      'Divine Orb'
+    )
     const cardInfo = await takeCardInfo({
       urls: searchStartUrls,
       cardQuery,
       exaltedChaosEquivalent,
+      divineChaosEquivalent,
       poesessid
     })
     const itemInfo = await takeItemInfo({
       urls: searchStartUrls,
       itemQuery,
       exaltedChaosEquivalent,
+      divineChaosEquivalent,
       card: cardInfo.card,
       leagueName,
       poesessid
