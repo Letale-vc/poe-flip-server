@@ -147,7 +147,7 @@ const makeARequestToAnyItem = async (urls, query) => {
     const { id, result, total } = firstRequest
     const totalTakeResultArray = []
     const howToSkipFirstItems = total > 50 ? 5 : 1
-    const howMuchToTakeFromTheResult = result.length <= 10 ? result.length : 10
+    const howMuchToTakeFromTheResult = result.length <= 9 ? result.length : 9
 
     for (
       let i = howToSkipFirstItems;
@@ -156,14 +156,17 @@ const makeARequestToAnyItem = async (urls, query) => {
     ) {
       totalTakeResultArray.push(result[i])
     }
+
     const resultIdsArrayString = totalTakeResultArray.join(',')
     const secondRequest = await poeSecondRequest(
       urls.secondUrl,
       resultIdsArrayString,
       id
     )
+    console.log(secondRequest)
     return { result: secondRequest.result, id }
   } catch (err) {
+    console.error(err)
     throw new Error(err)
   }
 }
@@ -175,7 +178,6 @@ const getAnyItemLink = (leagueName, Query) => {
 const takeCardInfo = async ({ urls, cardQuery, divineChaosEquivalent }) => {
   try {
     const infoCard = await makeARequestToAnyItem(urls, cardQuery)
-
     const { result } = infoCard
     const card = result[0].item.baseType
     const stackSize = result[0].item.maxStackSize
@@ -191,6 +193,7 @@ const takeCardInfo = async ({ urls, cardQuery, divineChaosEquivalent }) => {
       cardDivineValue
     }
   } catch (err) {
+    console.error(err)
     throw new Error(err)
   }
 }
@@ -225,6 +228,7 @@ const takeItemInfo = async ({
       itemLink: getAnyItemLink(leagueName, itemQuery)
     }
   } catch (err) {
+    console.error(err)
     throw new Error(err)
   }
 }
@@ -272,6 +276,7 @@ const takeRow = async ({ cardQuery, itemQuery, leagueName }) => {
       profitInChaosPerCard
     }
   } catch (err) {
+    console.error(err)
     throw new Error(err)
   }
 }
