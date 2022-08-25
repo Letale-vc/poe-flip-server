@@ -62,7 +62,7 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-      if (l !== 0 && ((l / b) * 100) / b < 50) {
+      if (l !== 0 && (l / b) * 100 < 50) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
 
@@ -170,7 +170,6 @@ const makeARequestToAnyItem = async (urls, query) => {
       resultIdsArrayString,
       id
     )
-    console.log(secondRequest)
     return { result: secondRequest.result, id }
   } catch (err) {
     console.error(err)
