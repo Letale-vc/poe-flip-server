@@ -52,7 +52,8 @@ const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
   }
 }
 
-const difference = 97
+const differenceChaos = 85
+const differenceDivine = 97
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue) => {
@@ -64,10 +65,11 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       if (l !== 0 && ((l / b) * 100) / b < 50) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
-      if (l !== 0 && (l / b) * 100 > difference) {
-        return previousValue
-      }
+
       if (isChaosCurrency) {
+        if (l !== 0 && (l / b) * 100 > differenceChaos) {
+          return previousValue
+        }
         return {
           accValue: a + b,
           lastPrice: b,
@@ -75,6 +77,9 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
+        if (l !== 0 && (l / b) * 100 > differenceDivine) {
+          return previousValue
+        }
         const convertDivineInChaos = b * divineChaosEquivalent
         return {
           accValue: a + convertDivineInChaos,
@@ -108,10 +113,11 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
       if (l !== 0 && ((l / b) * 100) / b < 50) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
-      if (l !== 0 && (l / b) * 100 > difference) {
-        return previousValue
-      }
+
       if (isChaosCurrency) {
+        if (l !== 0 && (l / b) * 100 > differenceChaos) {
+          return previousValue
+        }
         return {
           accValue: b / divineChaosEquivalent + a,
           lastPrice: b,
@@ -119,6 +125,9 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
+        if (l !== 0 && (l / b) * 100 > differenceDivine) {
+          return previousValue
+        }
         return {
           accValue: a + b,
           lastPrice: b,
