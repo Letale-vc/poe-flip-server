@@ -146,7 +146,7 @@ const makeARequestToAnyItem = async (urls, query) => {
     const firstRequest = await poeFirsRequest(urls.firstUrl, query)
     const { id, result, total } = firstRequest
     const totalTakeResultArray = []
-    const howToSkipFirstItems = total > 50 ? 5 : 1
+    const howToSkipFirstItems = total > 70 ? 5 : 1
     const howMuchToTakeFromTheResult = result.length <= 9 ? result.length : 9
 
     for (
