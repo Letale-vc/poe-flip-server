@@ -52,6 +52,7 @@ const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
   }
 }
 
+const difference = 90
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue) => {
@@ -107,7 +108,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
 
       if (isChaosCurrency) {
         const convertChaosInEx = b / divineChaosEquivalent
-        if (l !== 0 && (l * 100) / convertChaosInEx < 90) {
+        if (l !== 0 && (l * 100) / convertChaosInEx < difference) {
           return previousValue
         }
         return {
@@ -117,7 +118,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
-        if (l !== 0 && (l * 100) / b < 90) {
+        if (l !== 0 && (l * 100) / b < difference) {
           return previousValue
         }
         return {
