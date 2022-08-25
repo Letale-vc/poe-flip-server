@@ -52,7 +52,7 @@ const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
   }
 }
 
-const difference = 90
+const difference = 95
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue) => {
@@ -61,10 +61,10 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
+      if (l !== 0 && (l * 100) / b < difference) {
+        return previousValue
+      }
       if (isChaosCurrency) {
-        if (l !== 0 && (l * 100) / b < 85) {
-          return previousValue
-        }
         return {
           accValue: a + b,
           lastPrice: b,
@@ -73,9 +73,6 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       }
       if (isDivineCurrency) {
         const convertDivineInChaos = b * divineChaosEquivalent
-        if (l !== 0 && (l * 100) / convertDivineInChaos < 85) {
-          return previousValue
-        }
         return {
           accValue: a + convertDivineInChaos,
           lastPrice: b,
@@ -105,12 +102,10 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-
+      if (l !== 0 && (l * 100) / b < difference) {
+        return previousValue
+      }
       if (isChaosCurrency) {
-        const convertChaosInEx = b / divineChaosEquivalent
-        if (l !== 0 && (l * 100) / convertChaosInEx < difference) {
-          return previousValue
-        }
         return {
           accValue: b / divineChaosEquivalent + a,
           lastPrice: b,
@@ -118,9 +113,6 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
-        if (l !== 0 && (l * 100) / b < difference) {
-          return previousValue
-        }
         return {
           accValue: a + b,
           lastPrice: b,
