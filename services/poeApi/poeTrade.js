@@ -107,7 +107,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
 
       if (isChaosCurrency) {
         const convertChaosInEx = b / divineChaosEquivalent
-        if (l !== 0 && (l * 100) / convertChaosInEx < 85) {
+        if (l !== 0 && (l * 100) / convertChaosInEx < 90) {
           return previousValue
         }
         return {
@@ -117,7 +117,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
-        if (l !== 0 && (l * 100) / b < 85) {
+        if (l !== 0 && (l * 100) / b < 90) {
           return previousValue
         }
         return {
