@@ -144,11 +144,16 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
 const makeARequestToAnyItem = async (urls, query) => {
   try {
     const firstRequest = await poeFirsRequest(urls.firstUrl, query)
-    const { id, result } = firstRequest
+    const { id, result, total } = firstRequest
     const totalTakeResultArray = []
+    const howToSkipFirstItems = total > 50 ? 5 : 1
     const howMuchToTakeFromTheResult = result.length <= 10 ? result.length : 10
 
-    for (let i = 1; i <= howMuchToTakeFromTheResult; i += 1) {
+    for (
+      let i = howToSkipFirstItems;
+      i <= howToSkipFirstItems + howMuchToTakeFromTheResult;
+      i += 1
+    ) {
       totalTakeResultArray.push(result[i])
     }
     const resultIdsArrayString = totalTakeResultArray.join(',')
