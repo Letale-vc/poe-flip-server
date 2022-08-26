@@ -53,7 +53,7 @@ const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
 }
 
 const differenceChaos = 85
-const differenceDivine = 97
+const differenceDivine = 98
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue) => {
@@ -62,7 +62,7 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-      if (l !== 0 && (l / b) * 100 < 50) {
+      if (l !== 0 && (l / b) * 100 < 40) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
 
@@ -110,7 +110,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-      if (l !== 0 && (l / b) * 100 < 50) {
+      if (l !== 0 && (l / b) * 100 < 40) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
 
@@ -153,8 +153,8 @@ const makeARequestToAnyItem = async (urls, query) => {
     const firstRequest = await poeFirsRequest(urls.firstUrl, query)
     const { id, result, total } = firstRequest
     const totalTakeResultArray = []
-    const howToSkipFirstItems = total > 70 ? 5 : 1
-    const howMuchToTakeFromTheResult = result.length <= 9 ? result.length : 9
+    const howToSkipFirstItems = total > 60 ? 2 : 0
+    const howMuchToTakeFromTheResult = result.length <= 10 ? result.length : 10
 
     for (
       let i = howToSkipFirstItems;
@@ -325,7 +325,7 @@ const createOrUpdateData = async (isHaveFile) => {
           return acc
         } finally {
           await new Promise((res) => {
-            setTimeout(res, 25000)
+            setTimeout(res, 30000)
           })
         }
       }, Promise.resolve([...oldRowPoeData]))
@@ -350,7 +350,7 @@ const createOrUpdateData = async (isHaveFile) => {
       } catch (err) {
         return acc
       } finally {
-        await delay(25000)
+        await delay(30000)
       }
     }, Promise.resolve([]))
   } catch (err) {
