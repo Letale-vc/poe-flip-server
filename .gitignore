@@ -1,7 +1,0 @@
-node_modules
-.vscode
-poeData.json
-poeSearchUrls.json
-ninjaData.json
-yarn.lock
-package-lock.json
