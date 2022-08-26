@@ -15,11 +15,6 @@ const {
   delay
 } = require('./helpers')
 
-// const deliriumOrbQuery =
-//   '{"query":{"status":{"option":"online"},"have":["chaos"],"want":["fine-delirium-orb","singular-delirium-orb","thaumaturges-delirium-orb","diviners-delirium-orb","fossilised-delirium-orb","delirium-orb","cartographers-delirium-orb","jewellers-delirium-orb","primal-delirium-orb","imperial-delirium-orb","abyssal-delirium-orb","kalguuran-delirium-orb","timeless-delirium-orb","blighted-delirium-orb","foreboding-delirium-orb","obscured-delirium-orb","amorphous-delirium-orb","whispering-delirium-orb","fragmented-delirium-orb","skittering-delirium-orb"]},"sort":{"have":"asc"},"engine":"new"}'
-// const exaltedQuery =
-//   '{"query":{"status":{"option":"online"},"type":"Exalted Orb","stats":[{"type":"and","filters":[]}]},"sort":{"price":"asc"}}'
-
 let forceStop = true
 
 exports.forceStopChange = (value) => {
