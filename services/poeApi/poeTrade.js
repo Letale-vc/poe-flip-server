@@ -56,16 +56,18 @@ const differenceChaos = 85
 const differenceDivine = 98
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
-    (previousValue, currentValue) => {
+    (previousValue, currentValue, index) => {
       const isChaosCurrency = currentValue.listing.price.currency === 'chaos'
       const isDivineCurrency = currentValue.listing.price.currency === 'divine'
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-      if (l !== 0 && (l / b) * 100 < 40) {
+      if (l !== 0 && (l / b) * 100 < 40 && index < 4) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
-
+      if (previousValue.count > 4) {
+        return previousValue
+      }
       if (isChaosCurrency) {
         if (l !== 0 && (l / b) * 100 > differenceChaos) {
           return previousValue
