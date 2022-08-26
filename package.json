@@ -5,7 +5,8 @@
   "type": "commonjs",
   "scripts": {
     "start": "node ./bin/www",
-    "pm2": "pm2 start ./bin/www --max-memory-restart 500M  --restart-delay=3000 && pm2 monit"
+    "pm2": "pm2 start ./bin/www --max-memory-restart 500M  --restart-delay=3000 && pm2 monit",
+    "update": "pm2 delete all && git pull && npm run pm2"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
