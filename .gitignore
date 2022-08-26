@@ -3,3 +3,5 @@ node_modules
 poeData.json
 poeSearchUrls.json
 ninjaData.json
+yarn.lock
+package-lock.json
