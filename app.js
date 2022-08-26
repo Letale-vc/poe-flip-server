@@ -112,8 +112,8 @@ app.get('/poeTrade', async (req, res) => {
   }
 })
 
-app.use(function (err, req, res) {
-  console.error(err.stack)
+app.use(function (req, res) {
+  console.error(req.stack)
   res.status(500).send('Something broke!')
 })
 
