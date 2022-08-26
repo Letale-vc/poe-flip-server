@@ -15,10 +15,12 @@ const {
   delay
 } = require('./helpers')
 
-let forceStop = true
+let forceStop = false
+let isUpdating = false
 
 exports.forceStopChange = (value) => {
   console.log('forseStop')
+  isUpdating = value
   forceStop = value
 }
 const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
@@ -57,7 +59,7 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
       const l = previousValue.lastPrice
       const a = previousValue.accValue
       const b = currentValue.listing.price.amount
-      if (l !== 0 && (l / b) * 100 < 40 && index < 4) {
+      if (l !== 0 && (l / b) * 100 < 40 && index < 4 && index !== 0) {
         return { accValue: 0, lastPrice: 0, count: 0 }
       }
       if (previousValue.count > 4) {
@@ -74,7 +76,7 @@ const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
-        if (l !== 0 && (l / b) * 100 > differenceDivine) {
+        if (l !== 0 && (l / b) * 100 < differenceDivine) {
           return previousValue
         }
         const convertDivineInChaos = b * divineChaosEquivalent
@@ -122,7 +124,7 @@ const takeDivineValue = async (itemsArray, divineChaosEquivalent, card) => {
         }
       }
       if (isDivineCurrency) {
-        if (l !== 0 && (l / b) * 100 > differenceDivine) {
+        if (l !== 0 && (l / b) * 100 < differenceDivine) {
           return previousValue
         }
         return {
@@ -300,7 +302,6 @@ const createOrUpdateData = async (isHaveFile) => {
           })
 
           if (!!row.card && !!row.item) {
-            console.log(row)
             let checkIfFindItem = false
             const newArray = acc.map((el) => {
               if (row.card === el.card) {
@@ -321,9 +322,7 @@ const createOrUpdateData = async (isHaveFile) => {
           console.error(err)
           return acc
         } finally {
-          await new Promise((res) => {
-            setTimeout(res, 30000)
-          })
+          await delay(30000)
         }
       }, Promise.resolve([...oldRowPoeData]))
       return
@@ -339,7 +338,6 @@ const createOrUpdateData = async (isHaveFile) => {
         })
 
         if (!!row.card && !!row.item) {
-          console.log(row)
           await saveAnyJsonInFile(namesFile.poeTradeData, [...acc, row])
           return Promise.resolve([...acc, row])
         }
@@ -359,6 +357,9 @@ const createOrUpdateData = async (isHaveFile) => {
 
 exports.poeAPI = async () => {
   try {
+    if (isUpdating) {
+      return
+    }
     this.forceStopChange(true)
     while (forceStop) {
       const isHaveFile = fs.existsSync('poeData.json')
