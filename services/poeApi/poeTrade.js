@@ -49,8 +49,8 @@ const takeAnyCurrencyInfoFromPoeninja = async (leagueName, currency) => {
   }
 }
 
-const differenceChaos = 85
-const differenceDivine = 95
+const differenceChaos = 90
+const differenceDivine = 98
 const takeChaosValue = async (itemsArray, divineChaosEquivalent, card) => {
   const resultValue = itemsArray.reduce(
     (previousValue, currentValue, index) => {

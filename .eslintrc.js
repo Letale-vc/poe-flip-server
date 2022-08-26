@@ -10,7 +10,12 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
-    'linebreak-style': ['error', 'unix']
+    'prettier/prettier': [
+      'error',
+      {
+        endOfLine: 'auto'
+      }
+    ]
   },
   ignorePatterns: ['**/poeninjaApi/**/*.js']
 }
