@@ -154,7 +154,7 @@ const makeARequestToAnyItem = async (urls, query) => {
     const { id, result, total } = firstRequest
     const totalTakeResultArray = []
     const howToSkipFirstItems = total > 60 ? 2 : 0
-    const howMuchToTakeFromTheResult = result.length <= 10 ? result.length : 10
+    const howMuchToTakeFromTheResult = result.length <= 9 ? result.length : 9
 
     for (
       let i = howToSkipFirstItems;
